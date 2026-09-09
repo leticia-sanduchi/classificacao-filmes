@@ -17,11 +17,14 @@ export default function CadastroScreen({ navigation, route }) {
 
   const [titulo, setTitulo] = useState(filmeEditar?.titulo || "");
   const [genero, setGenero] = useState(filmeEditar?.genero || "");
-  const [status, setStatus] = useState(filmeEditar?.status || "Assistir");
+  const [status, setStatus] = useState(
+    filmeEditar?.status || "Assistir"
+  );
+
   const [nota, setNota] = useState(
     filmeEditar?.nota !== undefined && filmeEditar?.nota !== null
       ? String(filmeEditar.nota)
-      : "",
+      : ""
   );
 
   async function salvar() {
@@ -50,10 +53,14 @@ export default function CadastroScreen({ navigation, route }) {
               nota: status === "Assistido" ? nota : null,
             };
           }
+
           return filme;
         });
 
-        await AsyncStorage.setItem(CHAVE_STORAGE, JSON.stringify(novaLista));
+        await AsyncStorage.setItem(
+          CHAVE_STORAGE,
+          JSON.stringify(novaLista)
+        );
       } else {
         const novoFilme = {
           id: Date.now(),
@@ -64,7 +71,11 @@ export default function CadastroScreen({ navigation, route }) {
         };
 
         filmes.push(novoFilme);
-        await AsyncStorage.setItem(CHAVE_STORAGE, JSON.stringify(filmes));
+
+        await AsyncStorage.setItem(
+          CHAVE_STORAGE,
+          JSON.stringify(filmes)
+        );
       }
 
       navigation.goBack();
@@ -74,8 +85,12 @@ export default function CadastroScreen({ navigation, route }) {
   }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.content}
+    >
       <Text style={styles.label}>Título</Text>
+
       <TextInput
         style={styles.input}
         placeholder="Nome do filme"
@@ -85,6 +100,7 @@ export default function CadastroScreen({ navigation, route }) {
       />
 
       <Text style={styles.label}>Gênero</Text>
+
       <TextInput
         style={styles.input}
         placeholder="Ex: Terror, Ação, Comédia..."
@@ -94,20 +110,25 @@ export default function CadastroScreen({ navigation, route }) {
       />
 
       <Text style={styles.label}>Status</Text>
-        <View style={styles.status}>
-    <TouchableOpacity
-      style={status === 'Assistir' ? styles.statusSelecionado : styles.statusBotao}
-      onPress={() => setStatus('Assistir')}
-    >
-      <Text>🟡 Assistir</Text>
-    </TouchableOpacity>
 
-    <TouchableOpacity
-      style={status === 'Assistindo' ? styles.statusSelecionado : styles.statusBotao}
-      onPress={() => setStatus('Assistindo')}
-    >
-      <Text>🔵 Assistindo</Text>
-    </TouchableOpacity>
+      <View style={styles.statusContainer}>
+        <TouchableOpacity
+          style={[
+            styles.statusButton,
+            status === "Assistir" && styles.statusAssistirAtivo,
+          ]}
+          onPress={() => setStatus("Assistir")}
+        >
+          <Text
+            style={[
+              styles.statusText,
+              status === "Assistir" && styles.statusTextAtivo,
+            ]}
+          >
+            🟡 Assistir
+          </Text>
+        </TouchableOpacity>
+
         <TouchableOpacity
           style={[
             styles.statusButton,
@@ -146,22 +167,46 @@ export default function CadastroScreen({ navigation, route }) {
       {status === "Assistido" && (
         <>
           <Text style={styles.label}>Nota ⭐</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="De 1 a 5"
-              keyboardType="numeric"
-              value={nota.toString()}
-              onChangeText={(texto) => {
-                if (texto === '' || ['1', '2', '3', '4', '5'].includes(texto)) {
-                  setNota(texto);
-                }
-              }}
-            />
+
+          <TextInput
+            style={styles.input}
+            placeholder="De 1 a 5"
+            placeholderTextColor="#999"
+            keyboardType="decimal-pad"
+            value={nota}
+            onChangeText={(texto) => {
+              // Aceita vírgula ou ponto
+              const valor = texto.replace(",", ".");
+
+              // Permite apagar
+              if (valor === "") {
+                setNota("");
+                return;
+              }
+
+              // Permite apenas números e no máximo 1 casa decimal
+              if (!/^\d*\.?\d{0,1}$/.test(valor)) {
+                return;
+              }
+
+              // Não permite nota maior que 5
+              if (Number(valor) > 5) {
+                return;
+              }
+
+              setNota(valor);
+            }}
+          />
         </>
       )}
 
-      <TouchableOpacity style={styles.salvar} onPress={salvar}>
-        <Text style={styles.salvarTexto}>Salvar filme</Text>
+      <TouchableOpacity
+        style={styles.salvar}
+        onPress={salvar}
+      >
+        <Text style={styles.salvarTexto}>
+          Salvar filme
+        </Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -172,9 +217,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F4F6F9",
   },
+
   content: {
     padding: 20,
   },
+
   label: {
     fontWeight: "bold",
     fontSize: 15,
@@ -182,6 +229,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 6,
   },
+
   input: {
     backgroundColor: "#FFFFFF",
     borderWidth: 1,
@@ -191,42 +239,48 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#2C3E50",
   },
+
   statusContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
     gap: 8,
     marginTop: 6,
   },
+
   statusButton: {
-    flex: 1,
     paddingVertical: 12,
+    paddingHorizontal: 12,
     borderRadius: 10,
     backgroundColor: "#FFFFFF",
     borderWidth: 1,
     borderColor: "#E0E6ED",
     alignItems: "center",
   },
+
   statusAssistirAtivo: {
     backgroundColor: "#FFF9E6",
     borderColor: "#F1C40F",
   },
+
   statusAssistindoAtivo: {
     backgroundColor: "#EBF5FB",
     borderColor: "#3498DB",
   },
+
   statusAssistidoAtivo: {
     backgroundColor: "#E8F8F5",
     borderColor: "#2ECC71",
   },
+
   statusText: {
     fontSize: 13,
     fontWeight: "600",
     color: "#7F8C8D",
   },
+
   statusTextAtivo: {
     color: "#2C3E50",
     fontWeight: "bold",
   },
+
   salvar: {
     marginTop: 32,
     backgroundColor: "#6C5CE7",
@@ -234,35 +288,18 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     shadowColor: "#6C5CE7",
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
     shadowOpacity: 0.3,
     shadowRadius: 5,
     elevation: 4,
   },
 
   salvarTexto: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 18,
-    color: '#fff',
-  },
-
-  status: {
-    gap: 10,
-    marginTop: 10,
-  },
-
-  statusBotao: {
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-  },
-
-  statusSelecionado: {
-    padding: 12,
-    borderWidth: 2,
-    borderColor: '#333',
-    borderRadius: 8,
-    backgroundColor: '#ddd',
+    color: "#fff",
   },
 });
