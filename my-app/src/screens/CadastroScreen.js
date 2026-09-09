@@ -27,6 +27,7 @@ export default function CadastroScreen({ navigation, route }) {
       ? String(filmeEditar.nota)
       : ""
   );
+  const [review, setReview] = useState(filmeEditar?.review || "");
 
   async function salvar() {
     if (!titulo || !genero) {
@@ -52,6 +53,7 @@ export default function CadastroScreen({ navigation, route }) {
               genero,
               status,
               nota: status === "Assistido" ? nota : null,
+              review: status === "Assistido" ? review : "",
             };
           }
 
@@ -69,6 +71,7 @@ export default function CadastroScreen({ navigation, route }) {
           genero,
           status,
           nota: status === "Assistido" ? nota : null,
+          review: status === "Assistido" ? review : "",
         };
 
         filmes.push(novoFilme);
@@ -211,6 +214,22 @@ export default function CadastroScreen({ navigation, route }) {
               setNota(valor);
             }}
           />
+
+            <Text style={styles.label}>Review</Text>
+
+            <TextInput
+              style={[styles.input, styles.reviewInput]}
+              placeholder="O que você achou do filme?"
+              placeholderTextColor="#94A3B8"
+              value={review}
+              onChangeText={setReview}
+              multiline
+              maxLength={300}
+            />
+
+            <Text style={styles.contador}>
+              {review.length}/300
+            </Text>
         </>
       )}
 
@@ -253,6 +272,11 @@ const styles = StyleSheet.create({
     padding: 12,
     fontSize: 16,
     color: "#F8FAFC",
+  },
+
+  reviewInput: {
+    height: 100,
+    textAlignVertical: "top",
   },
 
   statusContainer: {
@@ -319,10 +343,17 @@ const styles = StyleSheet.create({
   },
 
   pickerContainer: {
-  backgroundColor: "#1E293B",
-  borderWidth: 1,
-  borderColor: "#334155",
-  borderRadius: 12,
-  overflow: "hidden",
+    backgroundColor: "#1E293B",
+    borderWidth: 1,
+    borderColor: "#334155",
+    borderRadius: 12,
+    overflow: "hidden",
 },
+
+  contador: {
+    textAlign: "right",
+    marginTop: 4,
+    color: "#94A3B8",
+    fontSize: 12,
+  },
 });

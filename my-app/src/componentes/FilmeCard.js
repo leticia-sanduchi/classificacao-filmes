@@ -1,58 +1,115 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 
 export default function FilmeCard({ filme, onEditar, onExcluir, onStatus }) {
+  const [modalVisivel, setModalVisivel] = useState(false);
 return (
-  <View style={styles.card}>
-    <View style={styles.cabecalho}>
-      <Text style={styles.titulo}>{filme.titulo}</Text>
+  <>
+    <TouchableOpacity
+      style={styles.card}
+      onPress={() => setModalVisivel(true)}
+      activeOpacity={0.8}
+    >
+      <View style={styles.cabecalho}>
+        <Text style={styles.titulo}>{filme.titulo}</Text>
 
-      <View style={styles.status}>
-        <Text style={styles.statusTexto}>
-          {filme.status}
-        </Text>
+        <View style={styles.status}>
+          <Text style={styles.statusTexto}>
+            {filme.status}
+          </Text>
+        </View>
       </View>
-    </View>
 
-    <Text style={styles.genero}>
-      {filme.genero}
-    </Text>
-
-    {filme.status === "Assistido" && (
-      <Text style={styles.nota}>
-        ⭐ {filme.nota}/5
+      <Text style={styles.genero}>
+        {filme.genero}
       </Text>
-    )}
 
-    <View style={styles.botoes}>
-      <TouchableOpacity
-        style={styles.botao}
-        onPress={onStatus}
-      >
-        <Text style={styles.botaoTexto}>
-          Alterar status
+      {filme.status === "Assistido" && (
+        <Text style={styles.nota}>
+          ⭐ {filme.nota}/5
         </Text>
-      </TouchableOpacity>
+      )}
 
-      <TouchableOpacity
-        style={styles.botao}
-        onPress={onEditar}
-      >
-        <Text style={styles.botaoTexto}>
-          Editar
-        </Text>
-      </TouchableOpacity>
+      <View style={styles.botoes}>
+        <TouchableOpacity
+          style={styles.botao}
+          onPress={onStatus}
+        >
+          <Text style={styles.botaoTexto}>
+            Alterar status
+          </Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.botaoExcluir}
-        onPress={onExcluir}
-      >
-        <Text style={styles.excluirTexto}>
-          Excluir
-        </Text>
-      </TouchableOpacity>
-    </View>
-  </View>
+        <TouchableOpacity
+          style={styles.botao}
+          onPress={onEditar}
+        >
+          <Text style={styles.botaoTexto}>
+            Editar
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.botaoExcluir}
+          onPress={onExcluir}
+        >
+          <Text style={styles.excluirTexto}>
+            Excluir
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </TouchableOpacity>
+
+    <Modal
+      visible={modalVisivel}
+      transparent
+      animationType="fade"
+      onRequestClose={() => setModalVisivel(false)}
+    >
+      <View style={styles.modalFundo}>
+        <View style={styles.modal}>
+
+          <Text style={styles.modalTitulo}>
+            {filme.titulo}
+          </Text>
+
+          <Text style={styles.modalGenero}>
+            {filme.genero}
+          </Text>
+
+          <Text style={styles.modalStatus}>
+            {filme.status}
+          </Text>
+
+          {filme.status === "Assistido" && (
+            <>
+              <Text style={styles.modalNota}>
+                ⭐ {filme.nota}/5
+              </Text>
+
+              <Text style={styles.modalReviewTitulo}>
+                Minha review
+              </Text>
+
+              <Text style={styles.modalReview}>
+                {filme.review || "Nenhum comentário foi adicionado."}
+              </Text>
+            </>
+          )}
+
+          <TouchableOpacity
+            style={styles.fechar}
+            onPress={() => setModalVisivel(false)}
+          >
+            <Text style={styles.fecharTexto}>
+              Fechar
+            </Text>
+          </TouchableOpacity>
+
+        </View>
+      </View>
+    </Modal>
+  </>
 );
 }
 
@@ -138,5 +195,81 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "bold",
     color: "#FDA4AF",
+  },
+
+    modalFundo: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.65)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+
+  modal: {
+    width: "100%",
+    backgroundColor: "#1E293B",
+    borderRadius: 18,
+    padding: 22,
+    borderWidth: 1,
+    borderColor: "#334155",
+  },
+
+  modalTitulo: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#F8FAFC",
+    marginBottom: 6,
+  },
+
+  modalGenero: {
+    fontSize: 14,
+    color: "#94A3B8",
+    marginBottom: 14,
+  },
+
+  modalStatus: {
+    alignSelf: "flex-start",
+    backgroundColor: "#052E16",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 20,
+    overflow: "hidden",
+    marginBottom: 14,
+    color: "#86EFAC",
+    fontWeight: "bold",
+  },
+
+  modalNota: {
+    fontSize: 17,
+    fontWeight: "bold",
+    color: "#F8FAFC",
+    marginBottom: 18,
+  },
+
+  modalReviewTitulo: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#F8FAFC",
+    marginBottom: 6,
+  },
+
+  modalReview: {
+    fontSize: 15,
+    lineHeight: 22,
+    color: "#CBD5E1",
+    marginBottom: 20,
+  },
+
+  fechar: {
+    backgroundColor: "#6366F1",
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+
+  fecharTexto: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    fontSize: 15,
   },
 });
