@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,37 +6,40 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
-} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+  ScrollView,
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const CHAVE_STORAGE = '@cinelist_filmes';
+const CHAVE_STORAGE = "@cinelist_filmes";
 
 export default function CadastroScreen({ navigation, route }) {
   const filmeEditar = route.params?.filme;
 
-  const [titulo, setTitulo] = useState(filmeEditar?.titulo || '');
-  const [genero, setGenero] = useState(filmeEditar?.genero || '');
-  const [status, setStatus] = useState(filmeEditar?.status || 'Assistir');
-  const [nota, setNota] = useState(filmeEditar?.nota || '');
+  const [titulo, setTitulo] = useState(filmeEditar?.titulo || "");
+  const [genero, setGenero] = useState(filmeEditar?.genero || "");
+  const [status, setStatus] = useState(filmeEditar?.status || "Assistir");
+  const [nota, setNota] = useState(
+    filmeEditar?.nota !== undefined && filmeEditar?.nota !== null
+      ? String(filmeEditar.nota)
+      : "",
+  );
 
   async function salvar() {
     if (!titulo || !genero) {
-      Alert.alert('Atenção', 'Preencha o título e o gênero.');
+      Alert.alert("Atenção", "Preencha o título e o gênero.");
       return;
     }
 
-    if (status === 'Assistido' && !nota) {
-      Alert.alert('Atenção', 'Digite uma nota para o filme.');
+    if (status === "Assistido" && !nota) {
+      Alert.alert("Atenção", "Digite uma nota para o filme.");
       return;
     }
 
     try {
-      // Busca a lista atual salva no dispositivo
       const dados = await AsyncStorage.getItem(CHAVE_STORAGE);
       const filmes = dados ? JSON.parse(dados) : [];
 
       if (filmeEditar) {
-        // Atualiza o filme existente
         const novaLista = filmes.map((filme) => {
           if (filme.id === filmeEditar.id) {
             return {
@@ -44,7 +47,7 @@ export default function CadastroScreen({ navigation, route }) {
               titulo,
               genero,
               status,
-              nota: status === 'Assistido' ? nota : null,
+              nota: status === "Assistido" ? nota : null,
             };
           }
           return filme;
@@ -52,13 +55,12 @@ export default function CadastroScreen({ navigation, route }) {
 
         await AsyncStorage.setItem(CHAVE_STORAGE, JSON.stringify(novaLista));
       } else {
-        // Adiciona um filme novo
         const novoFilme = {
           id: Date.now(),
           titulo,
           genero,
           status,
-          nota: status === 'Assistido' ? nota : null,
+          nota: status === "Assistido" ? nota : null,
         };
 
         filmes.push(novoFilme);
@@ -67,16 +69,17 @@ export default function CadastroScreen({ navigation, route }) {
 
       navigation.goBack();
     } catch (error) {
-      console.log('Erro ao salvar no storage:', error);
+      console.log("Erro ao salvar no storage:", error);
     }
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Text style={styles.label}>Título</Text>
       <TextInput
         style={styles.input}
         placeholder="Nome do filme"
+        placeholderTextColor="#999"
         value={titulo}
         onChangeText={setTitulo}
       />
@@ -85,6 +88,7 @@ export default function CadastroScreen({ navigation, route }) {
       <TextInput
         style={styles.input}
         placeholder="Ex: Terror, Ação, Comédia..."
+        placeholderTextColor="#999"
         value={genero}
         onChangeText={setGenero}
       />
@@ -104,79 +108,136 @@ export default function CadastroScreen({ navigation, route }) {
     >
       <Text>🔵 Assistindo</Text>
     </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.statusButton,
+            status === "Assistindo" && styles.statusAssistindoAtivo,
+          ]}
+          onPress={() => setStatus("Assistindo")}
+        >
+          <Text
+            style={[
+              styles.statusText,
+              status === "Assistindo" && styles.statusTextAtivo,
+            ]}
+          >
+            🔵 Assistindo
+          </Text>
+        </TouchableOpacity>
 
-    <TouchableOpacity
-      style={status === 'Assistido' ? styles.statusSelecionado : styles.statusBotao}
-      onPress={() => setStatus('Assistido')}
-    >
-      <Text>🟢 Assistido</Text>
-    </TouchableOpacity>
-  </View>
+        <TouchableOpacity
+          style={[
+            styles.statusButton,
+            status === "Assistido" && styles.statusAssistidoAtivo,
+          ]}
+          onPress={() => setStatus("Assistido")}
+        >
+          <Text
+            style={[
+              styles.statusText,
+              status === "Assistido" && styles.statusTextAtivo,
+            ]}
+          >
+            🟢 Assistido
+          </Text>
+        </TouchableOpacity>
+      </View>
 
-      {status === 'Assistido' && (
+      {status === "Assistido" && (
         <>
-<TextInput
-  style={styles.input}
-  placeholder="De 1 a 5"
-  keyboardType="decimal-pad"
-  value={nota.toString()}
-  onChangeText={(texto) => {
-  const valor = texto.replace(',', '.');
-
-  // Permite apagar o campo
-  if (valor === '') {
-    setNota('');
-    return;
-  }
-
-  // Aceita apenas números e, opcionalmente, até 2 casas decimais
-  if (!/^\d*\.?\d{0,1}$/.test(valor)) {
-    return;
-  }
-
-  // Não deixa passar de 5
-  if (Number(valor) > 5) {
-    return;
-  }
-
-  setNota(valor);
-}}
-/>
+          <Text style={styles.label}>Nota ⭐</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="De 1 a 5"
+              keyboardType="numeric"
+              value={nota.toString()}
+              onChangeText={(texto) => {
+                if (texto === '' || ['1', '2', '3', '4', '5'].includes(texto)) {
+                  setNota(texto);
+                }
+              }}
+            />
         </>
       )}
 
       <TouchableOpacity style={styles.salvar} onPress={salvar}>
         <Text style={styles.salvarTexto}>Salvar filme</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#F4F6F9",
+  },
+  content: {
     padding: 20,
   },
   label: {
-    fontWeight: 'bold',
-    marginTop: 15,
-    marginBottom: 5,
+    fontWeight: "bold",
+    fontSize: 15,
+    color: "#2C3E50",
+    marginTop: 16,
+    marginBottom: 6,
   },
   input: {
+    backgroundColor: "#FFFFFF",
     borderWidth: 1,
-    borderRadius: 8,
-    padding: 10,
+    borderColor: "#E0E6ED",
+    borderRadius: 10,
+    padding: 12,
+    fontSize: 16,
+    color: "#2C3E50",
   },
-  status: {
-    gap: 15,
-    marginTop: 10,
+  statusContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 8,
+    marginTop: 6,
+  },
+  statusButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 10,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E0E6ED",
+    alignItems: "center",
+  },
+  statusAssistirAtivo: {
+    backgroundColor: "#FFF9E6",
+    borderColor: "#F1C40F",
+  },
+  statusAssistindoAtivo: {
+    backgroundColor: "#EBF5FB",
+    borderColor: "#3498DB",
+  },
+  statusAssistidoAtivo: {
+    backgroundColor: "#E8F8F5",
+    borderColor: "#2ECC71",
+  },
+  statusText: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#7F8C8D",
+  },
+  statusTextAtivo: {
+    color: "#2C3E50",
+    fontWeight: "bold",
   },
   salvar: {
-    marginTop: 30,
-    padding: 15,
-    alignItems: 'center',
-    backgroundColor: '#222',
+    marginTop: 32,
+    backgroundColor: "#6C5CE7",
+    paddingVertical: 16,
     borderRadius: 10,
+    alignItems: "center",
+    shadowColor: "#6C5CE7",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 4,
   },
 
   salvarTexto: {
