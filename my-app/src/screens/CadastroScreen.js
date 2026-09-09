@@ -90,30 +90,43 @@ export default function CadastroScreen({ navigation, route }) {
       />
 
       <Text style={styles.label}>Status</Text>
-      <View style={styles.status}>
-        <TouchableOpacity onPress={() => setStatus('Assistir')}>
-          <Text>🟡 Assistir</Text>
-        </TouchableOpacity>
+        <View style={styles.status}>
+    <TouchableOpacity
+      style={status === 'Assistir' ? styles.statusSelecionado : styles.statusBotao}
+      onPress={() => setStatus('Assistir')}
+    >
+      <Text>🟡 Assistir</Text>
+    </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => setStatus('Assistindo')}>
-          <Text>🔵 Assistindo</Text>
-        </TouchableOpacity>
+    <TouchableOpacity
+      style={status === 'Assistindo' ? styles.statusSelecionado : styles.statusBotao}
+      onPress={() => setStatus('Assistindo')}
+    >
+      <Text>🔵 Assistindo</Text>
+    </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => setStatus('Assistido')}>
-          <Text>🟢 Assistido</Text>
-        </TouchableOpacity>
-      </View>
+    <TouchableOpacity
+      style={status === 'Assistido' ? styles.statusSelecionado : styles.statusBotao}
+      onPress={() => setStatus('Assistido')}
+    >
+      <Text>🟢 Assistido</Text>
+    </TouchableOpacity>
+  </View>
 
       {status === 'Assistido' && (
         <>
           <Text style={styles.label}>Nota ⭐</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="De 1 a 5"
-            keyboardType="numeric"
-            value={nota.toString()}
-            onChangeText={setNota}
-          />
+            <TextInput
+              style={styles.input}
+              placeholder="De 1 a 5"
+              keyboardType="numeric"
+              value={nota.toString()}
+              onChangeText={(texto) => {
+                if (texto === '' || ['1', '2', '3', '4', '5'].includes(texto)) {
+                  setNota(texto);
+                }
+              }}
+            />
         </>
       )}
 
@@ -147,9 +160,33 @@ const styles = StyleSheet.create({
     marginTop: 30,
     padding: 15,
     alignItems: 'center',
+    backgroundColor: '#222',
+    borderRadius: 10,
   },
+
   salvarTexto: {
     fontWeight: 'bold',
     fontSize: 18,
+    color: '#fff',
+  },
+
+  status: {
+    gap: 10,
+    marginTop: 10,
+  },
+
+  statusBotao: {
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+  },
+
+  statusSelecionado: {
+    padding: 12,
+    borderWidth: 2,
+    borderColor: '#333',
+    borderRadius: 8,
+    backgroundColor: '#ddd',
   },
 });

@@ -78,26 +78,26 @@ useFocusEffect(
       novoStatus = 'Assistir';
     }
 
-    setFilmes((atuais) => {
-      const novaLista = atuais.map((item) => {
-        if (item.id === filme.id) {
-          return {
-            ...item,
-            status: novoStatus,
-            nota: novoStatus === 'Assistido' ? item.nota : null,
-          };
-        }
+  setFilmes((atuais) => {
+    const novaLista = atuais.map((item) => {
+      if (item.id === filme.id) {
+        return {
+          ...item,
+          status: novoStatus,
+          nota: novoStatus === 'Assistido' ? item.nota : null,
+        };
+      }
 
-        return item;
-      });
-
-      AsyncStorage.setItem(
-        CHAVE_STORAGE,
-        JSON.stringify(novaLista)
-      );
-
-      return novaLista;
+      return item;
     });
+
+    AsyncStorage.setItem(
+      CHAVE_STORAGE,
+      JSON.stringify(novaLista)
+    );
+
+    return novaLista;
+  });
   }
 
   return (
@@ -190,4 +190,24 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: 'bold',
   },
+
+  status: {
+  gap: 10,
+  marginTop: 10,
+},
+
+statusBotao: {
+  padding: 12,
+  borderWidth: 1,
+  borderColor: '#ccc',
+  borderRadius: 8,
+},
+
+statusSelecionado: {
+  padding: 12,
+  borderWidth: 2,
+  borderColor: '#333',
+  borderRadius: 8,
+  backgroundColor: '#ddd',
+},
 });
