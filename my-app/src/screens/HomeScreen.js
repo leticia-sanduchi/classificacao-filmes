@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   View,
   Text,
@@ -17,38 +18,25 @@ export default function HomeScreen({ navigation }) {
   const [filtro, setFiltro] = useState('Assistir');
   const [carregou, setCarregou] = useState(false);
 
-  // EFEITO 1: Carrega os dados quando a tela abre
-  useEffect(() => {
+useFocusEffect(
+  React.useCallback(() => {
     async function carregarFilmes() {
       try {
         const dados = await AsyncStorage.getItem(CHAVE_STORAGE);
+
         if (dados) {
           setFilmes(JSON.parse(dados));
+        } else {
+          setFilmes([]);
         }
       } catch (error) {
         console.log('Erro ao buscar filmes:', error);
-      } finally {
-        setCarregou(true);
       }
     }
 
     carregarFilmes();
-  }, []);
-
-  // EFEITO 2: Salva os dados no AsyncStorage sempre que 'filmes' muda
-  useEffect(() => {
-    if (!carregou) return;
-
-    async function salvar() {
-      try {
-        await AsyncStorage.setItem(CHAVE_STORAGE, JSON.stringify(filmes));
-      } catch (error) {
-        console.log('Erro ao salvar filmes:', error);
-      }
-    }
-
-    salvar();
-  }, [filmes, carregou]);
+  }, [])
+);
 
   function filmesFiltrados() {
     return filmes.filter((filme) => filme.status === filtro);
@@ -63,7 +51,16 @@ export default function HomeScreen({ navigation }) {
         {
           text: 'Excluir',
           onPress: () => {
-            setFilmes((atuais) => atuais.filter((filme) => filme.id !== id));
+            setFilmes((atuais) => {
+              const novaLista = atuais.filter((filme) => filme.id !== id);
+
+              AsyncStorage.setItem(
+                CHAVE_STORAGE,
+                JSON.stringify(novaLista)
+              );
+
+              return novaLista;
+            });
           },
         },
       ]
@@ -81,8 +78,8 @@ export default function HomeScreen({ navigation }) {
       novoStatus = 'Assistir';
     }
 
-    setFilmes((atuais) =>
-      atuais.map((item) => {
+    setFilmes((atuais) => {
+      const novaLista = atuais.map((item) => {
         if (item.id === filme.id) {
           return {
             ...item,
@@ -90,9 +87,17 @@ export default function HomeScreen({ navigation }) {
             nota: novoStatus === 'Assistido' ? item.nota : null,
           };
         }
+
         return item;
-      })
-    );
+      });
+
+      AsyncStorage.setItem(
+        CHAVE_STORAGE,
+        JSON.stringify(novaLista)
+      );
+
+      return novaLista;
+    });
   }
 
   return (
