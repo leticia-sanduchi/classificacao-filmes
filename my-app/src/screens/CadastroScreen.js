@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Picker } from "@react-native-picker/picker";
 import {
   View,
   Text,
@@ -91,23 +92,35 @@ export default function CadastroScreen({ navigation, route }) {
     >
       <Text style={styles.label}>Título</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Nome do filme"
-        placeholderTextColor="#999"
-        value={titulo}
-        onChangeText={setTitulo}
-      />
+    <TextInput
+      style={styles.input}
+      placeholder="Nome do filme"
+      placeholderTextColor="#999"
+      value={titulo}
+      onChangeText={setTitulo}
+      autoCapitalize="sentences"
+    />
 
-      <Text style={styles.label}>Gênero</Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Ex: Terror, Ação, Comédia..."
-        placeholderTextColor="#999"
-        value={genero}
-        onChangeText={setGenero}
-      />
+<View style={styles.input}>
+  <Picker
+    selectedValue={genero}
+    onValueChange={(itemValue) => setGenero(itemValue)}
+  >
+    <Picker.Item label="Selecione um gênero" value="" />
+    <Picker.Item label="Ação" value="Ação" />
+    <Picker.Item label="Aventura" value="Aventura" />
+    <Picker.Item label="Comédia" value="Comédia" />
+    <Picker.Item label="Drama" value="Drama" />
+    <Picker.Item label="Fantasia" value="Fantasia" />
+    <Picker.Item label="Ficção científica" value="Ficção científica" />
+    <Picker.Item label="Terror" value="Terror" />
+    <Picker.Item label="Romance" value="Romance" />
+    <Picker.Item label="Suspense" value="Suspense" />
+    <Picker.Item label="Musical" value="Musical" />
+    <Picker.Item label="Animação" value="Animação" />
+    <Picker.Item label="Documentário" value="Documentário" />
+  </Picker>
+</View>
 
       <Text style={styles.label}>Status</Text>
 
