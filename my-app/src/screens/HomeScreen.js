@@ -8,7 +8,7 @@ import {
   Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import FilmeCard from '../components/FilmeCard';
+import FilmeCard from '../componentes/FilmeCard';
 
 const CHAVE_STORAGE = '@cinelist_filmes';
 
