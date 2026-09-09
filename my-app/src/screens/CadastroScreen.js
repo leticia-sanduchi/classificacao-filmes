@@ -94,24 +94,20 @@ export default function CadastroScreen({ navigation, route }) {
       />
 
       <Text style={styles.label}>Status</Text>
-      <View style={styles.statusContainer}>
-        <TouchableOpacity
-          style={[
-            styles.statusButton,
-            status === "Assistir" && styles.statusAssistirAtivo,
-          ]}
-          onPress={() => setStatus("Assistir")}
-        >
-          <Text
-            style={[
-              styles.statusText,
-              status === "Assistir" && styles.statusTextAtivo,
-            ]}
-          >
-            🟡 Assistir
-          </Text>
-        </TouchableOpacity>
+        <View style={styles.status}>
+    <TouchableOpacity
+      style={status === 'Assistir' ? styles.statusSelecionado : styles.statusBotao}
+      onPress={() => setStatus('Assistir')}
+    >
+      <Text>🟡 Assistir</Text>
+    </TouchableOpacity>
 
+    <TouchableOpacity
+      style={status === 'Assistindo' ? styles.statusSelecionado : styles.statusBotao}
+      onPress={() => setStatus('Assistindo')}
+    >
+      <Text>🔵 Assistindo</Text>
+    </TouchableOpacity>
         <TouchableOpacity
           style={[
             styles.statusButton,
@@ -240,9 +236,30 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 4,
   },
+
   salvarTexto: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
-    fontSize: 16,
+    fontWeight: 'bold',
+    fontSize: 18,
+    color: '#fff',
+  },
+
+  status: {
+    gap: 10,
+    marginTop: 10,
+  },
+
+  statusBotao: {
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+  },
+
+  statusSelecionado: {
+    padding: 12,
+    borderWidth: 2,
+    borderColor: '#333',
+    borderRadius: 8,
+    backgroundColor: '#ddd',
   },
 });
