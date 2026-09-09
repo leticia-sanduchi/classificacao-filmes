@@ -115,18 +115,33 @@ export default function CadastroScreen({ navigation, route }) {
 
       {status === 'Assistido' && (
         <>
-          <Text style={styles.label}>Nota ⭐</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="De 1 a 5"
-              keyboardType="numeric"
-              value={nota.toString()}
-              onChangeText={(texto) => {
-                if (texto === '' || ['1', '2', '3', '4', '5'].includes(texto)) {
-                  setNota(texto);
-                }
-              }}
-            />
+<TextInput
+  style={styles.input}
+  placeholder="De 1 a 5"
+  keyboardType="decimal-pad"
+  value={nota.toString()}
+  onChangeText={(texto) => {
+  const valor = texto.replace(',', '.');
+
+  // Permite apagar o campo
+  if (valor === '') {
+    setNota('');
+    return;
+  }
+
+  // Aceita apenas números e, opcionalmente, até 2 casas decimais
+  if (!/^\d*\.?\d{0,1}$/.test(valor)) {
+    return;
+  }
+
+  // Não deixa passar de 5
+  if (Number(valor) > 5) {
+    return;
+  }
+
+  setNota(valor);
+}}
+/>
         </>
       )}
 
