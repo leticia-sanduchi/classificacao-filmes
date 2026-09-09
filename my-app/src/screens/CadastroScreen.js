@@ -101,12 +101,13 @@ export default function CadastroScreen({ navigation, route }) {
       autoCapitalize="sentences"
     />
 
-<View style={styles.input}>
+<View style={styles.pickerContainer}>
   <Picker
     selectedValue={genero}
     onValueChange={(itemValue) => setGenero(itemValue)}
+    dropdownIconColor="#F8FAFC"
   >
-    <Picker.Item label="Selecione um gênero" value="" />
+    <Picker.Item label="Selecione um gênero" value="" color="#94A3B8"/>
     <Picker.Item label="Ação" value="Ação" />
     <Picker.Item label="Aventura" value="Aventura" />
     <Picker.Item label="Comédia" value="Comédia" />
@@ -228,29 +229,30 @@ export default function CadastroScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F4F6F9",
+    backgroundColor: "#0F172A",
   },
 
   content: {
     padding: 20,
+    paddingBottom: 40,
   },
 
   label: {
     fontWeight: "bold",
     fontSize: 15,
-    color: "#2C3E50",
-    marginTop: 16,
-    marginBottom: 6,
+    color: "#F8FAFC",
+    marginTop: 18,
+    marginBottom: 8,
   },
 
   input: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#1E293B",
     borderWidth: 1,
-    borderColor: "#E0E6ED",
-    borderRadius: 10,
+    borderColor: "#334155",
+    borderRadius: 12,
     padding: 12,
     fontSize: 16,
-    color: "#2C3E50",
+    color: "#F8FAFC",
   },
 
   statusContainer: {
@@ -259,60 +261,68 @@ const styles = StyleSheet.create({
   },
 
   statusButton: {
-    paddingVertical: 12,
+    paddingVertical: 13,
     paddingHorizontal: 12,
-    borderRadius: 10,
-    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    backgroundColor: "#1E293B",
     borderWidth: 1,
-    borderColor: "#E0E6ED",
+    borderColor: "#334155",
     alignItems: "center",
   },
 
   statusAssistirAtivo: {
-    backgroundColor: "#FFF9E6",
-    borderColor: "#F1C40F",
+    backgroundColor: "#422006",
+    borderColor: "#F59E0B",
   },
 
   statusAssistindoAtivo: {
-    backgroundColor: "#EBF5FB",
-    borderColor: "#3498DB",
+    backgroundColor: "#172554",
+    borderColor: "#3B82F6",
   },
 
   statusAssistidoAtivo: {
-    backgroundColor: "#E8F8F5",
-    borderColor: "#2ECC71",
+    backgroundColor: "#172554",
+    borderColor: "#22C55E",
   },
 
   statusText: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: "600",
-    color: "#7F8C8D",
+    color: "#94A3B8",
   },
 
   statusTextAtivo: {
-    color: "#2C3E50",
+    color: "#FFFFFF",
     fontWeight: "bold",
   },
 
   salvar: {
-    marginTop: 32,
-    backgroundColor: "#6C5CE7",
+    marginTop: 30,
+    backgroundColor: "#6366F1",
     paddingVertical: 16,
-    borderRadius: 10,
+    borderRadius: 12,
     alignItems: "center",
-    shadowColor: "#6C5CE7",
+    shadowColor: "#6366F1",
     shadowOffset: {
       width: 0,
       height: 4,
     },
     shadowOpacity: 0.3,
-    shadowRadius: 5,
+    shadowRadius: 6,
     elevation: 4,
   },
 
   salvarTexto: {
     fontWeight: "bold",
-    fontSize: 18,
-    color: "#fff",
+    fontSize: 17,
+    color: "#FFFFFF",
   },
+
+  pickerContainer: {
+  backgroundColor: "#1E293B",
+  borderWidth: 1,
+  borderColor: "#334155",
+  borderRadius: 12,
+  overflow: "hidden",
+},
 });

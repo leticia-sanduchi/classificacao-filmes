@@ -224,12 +224,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   adicionar: {
-    backgroundColor: "#E11D48", // Vermelho/Rosa destaque estilo cinema
+    backgroundColor: "#6366F1",
     padding: 16,
     borderRadius: 12,
     alignItems: "center",
     marginTop: 10,
-    shadowColor: "#E11D48",
+    shadowColor: "#6366F1",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
